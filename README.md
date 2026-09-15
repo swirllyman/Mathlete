@@ -6,16 +6,33 @@ dress up by solving problems.
 Everything is spoken out loud, because most players can't read yet. Every
 answer is a big tappable picture. Nothing punishes a wrong guess.
 
-## Playing
+## Play it
+
+**https://swirllyman.github.io/Mathlete/**
+
+It is best on a tablet — open that link, add it to the home screen, and it runs
+full-screen like an app. Progress is saved in the browser, so it lives on
+whichever device it's played on.
+
+To run it locally instead:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the printed URL. It is best on a tablet — add it to the home screen and it
-runs full-screen like an app. Progress is saved in the browser, so it lives on
-whatever device it's played on.
+## Hosting
+
+Every push to `main` builds the site and publishes it to GitHub Pages via
+`.github/workflows/deploy.yml`.
+
+One-time setup, in the repo's **Settings → Pages**, set **Source** to
+**GitHub Actions**. (The deploy step fails until that's switched over from the
+default branch-based source.)
+
+The build uses a relative `base`, so the same `dist/` works from a project
+subpath like `/Mathlete/`, from a domain root, or opened straight off disk — no
+rebuild needed if the site ever moves or gets a custom domain.
 
 ## What's in it
 

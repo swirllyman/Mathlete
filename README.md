@@ -23,8 +23,10 @@ npm run dev
 
 ## Hosting
 
-Every push to `main` builds the site and publishes it to GitHub Pages via
-`.github/workflows/deploy.yml`.
+Every push to the repo's **default branch** builds the site and publishes it to
+GitHub Pages via `.github/workflows/deploy.yml`. Pushes to any other branch
+build nothing, and the workflow figures out which branch is the default on its
+own — so renaming the default to `main` later needs no change here.
 
 One-time setup, in the repo's **Settings → Pages**, set **Source** to
 **GitHub Actions**. (The deploy step fails until that's switched over from the

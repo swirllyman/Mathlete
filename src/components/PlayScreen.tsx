@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { sfx } from '../audio/sfx'
 import { speech } from '../audio/speech'
 import { makeLevelProblems, numberWord } from '../game/problems'
@@ -239,12 +239,28 @@ function Manipulatives({ problem, countingAt }: { problem: Problem; countingAt: 
   // fits next to its neighbour without either one wrapping oddly.
   const scale = total <= 5 ? 'xl' : total <= 10 ? 'lg' : total <= 16 ? 'md' : 'sm'
 
+  const split = groups.length > 1
+  // How many objects sit side by side across every tray. The stylesheet
+  // divides the usable width by this, so a wide layout (five and five) shrinks
+  // to fit a phone instead of running off the edge of it.
+  const columns = groups.reduce((sum, g) => sum + columnsFor(g.n), 0)
+
   return (
-    <div className={`objects objects--${scale} ${groups.length > 1 ? 'objects--split' : ''}`}>
+    <div
+      className={`objects objects--${scale} ${split ? 'objects--split' : ''}`}
+      style={{ ['--columns' as string]: columns }}
+    >
       {groups.map((group, gi) => (
-        <div className="objects__group" key={gi}>
-          {gi > 0 && <span className="objects__op" aria-hidden="true">+</span>}
-          <div className="objects__grid" style={{ ['--cols' as string]: columnsFor(group.n) }}>
+        <Fragment key={gi}>
+          {gi > 0 && (
+            <span className="objects__op" aria-hidden="true">
+              +
+            </span>
+          )}
+          <div
+            className={`tray tray--${split ? TRAY_TONE[gi] : 'solo'}`}
+            style={{ ['--cols' as string]: columnsFor(group.n) }}
+          >
             {Array.from({ length: group.n }, (_, i) => {
               const gone = i >= group.n - group.faded
               if (!gone) counter += 1
@@ -261,11 +277,19 @@ function Manipulatives({ problem, countingAt }: { problem: Problem; countingAt: 
               )
             })}
           </div>
-        </div>
+        </Fragment>
       ))}
     </div>
   )
 }
+
+/**
+ * Each addend gets its own coloured tray. Two piles of the same thing, sitting
+ * in a straight line, can be counted end to end without ever thinking about
+ * the plus — so the trays are tinted differently, tilted opposite ways so they
+ * never line up into one row, and separated by a real operator token.
+ */
+const TRAY_TONE = ['a', 'b'] as const
 
 /**
  * Lays a pile out the way a child is taught to see it: single rows up to

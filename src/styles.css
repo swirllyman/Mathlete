@@ -700,54 +700,108 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 2.6vw, 26px);
+  gap: clamp(4px, 1.6vw, 16px);
   /* Hug the objects rather than stretching into a big empty box; the auto
      margins below centre the question and its objects as one block. */
   flex: 0 1 auto;
   min-height: 0;
   margin-bottom: auto;
-  padding: clamp(8px, 1.8vh, 18px) clamp(10px, 3vw, 30px);
+  padding: clamp(10px, 2.2vh, 22px) clamp(8px, 2vw, 24px);
   max-width: 100%;
-  background: rgba(255, 255, 255, 0.62);
   border-radius: var(--r-lg);
+}
+
+/* A single pile needs no framing of its own beyond its tray. Two piles do: the
+   outer panel holds them together as one sum. */
+.objects--split {
+  background: rgba(255, 255, 255, 0.5);
   box-shadow: inset 0 3px 10px rgba(60, 40, 90, 0.1);
-  overflow: hidden;
 }
 
-.objects__group { display: flex; align-items: center; gap: clamp(4px, 1.4vw, 14px); min-width: 0; }
-
-/* Object size steps down as the pile grows, so both piles always fit. */
-.objects--xl { --obj: clamp(34px, min(11vh, 15vw), 100px); }
-.objects--lg { --obj: clamp(26px, min(8.5vh, 11vw), 76px); }
-.objects--md { --obj: clamp(20px, min(6.4vh, 8vw), 56px); }
-.objects--sm { --obj: clamp(16px, min(5vh, 6.2vw), 42px); }
-
-/* Two piles read as two piles: each group sits on its own soft mat. */
-.objects__group .objects__grid {
-  border-radius: var(--r-md);
-  padding: clamp(3px, 0.8vh, 8px);
+/* Object size is whichever is smaller: a comfortable height-based size, or
+   whatever actually fits across the widest row once the trays, the operator
+   and the page gutters have taken their share. Dividing by the real column
+   count is what keeps "5 + 5" on a phone from running off the screen. */
+.objects {
+  --fits: calc((100vw - 170px) / (var(--columns, 5) * 1.5));
+  --obj: max(14px, min(var(--obj-tall), var(--fits)));
 }
 
-.objects--split .objects__grid { background: rgba(255, 255, 255, 0.55); box-shadow: inset 0 0 0 2px rgba(120, 100, 160, 0.09); }
+.objects--xl { --obj-tall: min(10vh, 88px); }
+.objects--lg { --obj-tall: min(7.6vh, 68px); }
+.objects--md { --obj-tall: min(6vh, 52px); }
+.objects--sm { --obj-tall: min(4.6vh, 40px); }
 
-.objects__op {
-  flex: 0 0 auto;
-  font-size: clamp(26px, 5.2vh, 54px);
-  font-weight: 700;
-  color: var(--ink);
-  opacity: 0.55;
-}
+/* ---- trays ---- */
 
-.objects__grid {
+.tray {
   display: grid;
   grid-template-columns: repeat(var(--cols, 5), auto);
   justify-items: center;
   align-items: center;
   gap: clamp(2px, 0.9vw, 9px);
+  flex: 0 0 auto;
+  padding: clamp(6px, 1.3vh, 14px);
+  border-radius: var(--r-md);
+  background: var(--tray, #f3edff);
+  border: clamp(3px, 0.5vh, 4px) solid var(--tray-edge, #c3a6ff);
+  box-shadow: 0 5px 0 var(--tray-edge, #c3a6ff), 0 10px 18px rgba(60, 40, 90, 0.18);
 }
 
+/* Opposite tilts, so the two sets never resolve into one straight line a child
+   can just sweep across. */
+.tray--a {
+  --tray: #e4efff;
+  --tray-edge: #7ba9f5;
+  transform: rotate(-2.5deg);
+}
+
+.tray--b {
+  --tray: #ffeada;
+  --tray-edge: #f79f63;
+  transform: rotate(2.5deg);
+}
+
+/* One pile has nothing to be distinguished from, so it stays neutral and level. */
+.tray--solo {
+  --tray: #f3edff;
+  --tray-edge: #b49bea;
+}
+
+/* Each object sits on a chip in its own set's colour, so every single item
+   plainly belongs to one pile or the other. */
+.tray--a .object { background: #cde0ff; }
+.tray--b .object { background: #ffd9bc; }
+
+.objects__op {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 7vh, 62px);
+  height: clamp(38px, 7vh, 62px);
+  margin: 0 clamp(-4px, -0.6vw, -2px);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  font-size: clamp(26px, 5vh, 44px);
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--pop-sm);
+}
+
+/* ---- individual objects ---- */
+
 .object {
-  font-size: var(--obj, clamp(26px, 8vh, 74px));
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--obj, 3rem) * 1.24);
+  height: calc(var(--obj, 3rem) * 1.24);
+  border-radius: 50%;
+  background: #ece5fb;
+  font-size: var(--obj, 3rem);
   line-height: 1;
   animation: pop-in 0.42s cubic-bezier(0.2, 1.6, 0.4, 1) backwards;
   transition: transform 0.22s ease, filter 0.22s ease, opacity 0.35s ease;
@@ -758,14 +812,32 @@ button {
   to { opacity: 1; transform: none; }
 }
 
+/* Taken away: crossed off the way it is done on paper. The object stays
+   visible on purpose — a child has to still see the thing that left to believe
+   it left — so it dims rather than disappearing, under a bold red stroke. */
 .object--gone {
-  opacity: 0.22;
-  filter: grayscale(1);
-  transform: scale(0.82) rotate(14deg) translateY(-6px);
+  opacity: 0.62;
+  filter: grayscale(0.5);
+  transform: scale(0.9);
+  background: rgba(110, 92, 150, 0.16);
+}
+
+.object--gone::after {
+  content: '';
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 50%;
+  height: clamp(4px, 0.62vh, 7px);
+  border-radius: 4px;
+  background: #e0434f;
+  /* A white casing keeps the stroke readable over any emoji underneath. */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+  transform: translateY(-50%) rotate(-32deg);
 }
 
 .object--lit {
-  transform: scale(1.32) translateY(-6px);
+  transform: scale(1.22);
   filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.95)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
 }
 
@@ -817,7 +889,7 @@ button {
   line-height: 1;
 }
 
-.bubble__pip { font-size: clamp(10px, 2vh, 19px); }
+.bubble__pip { font-size: clamp(8px, min(2vh, 3.2vw), 19px); }
 
 .bubble--right {
   background: linear-gradient(180deg, #d9ffe9, #9bf0c2);

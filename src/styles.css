@@ -533,7 +533,6 @@ button {
   flex: 0 0 auto;
 }
 
-.world--locked { filter: grayscale(0.4) saturate(0.7); opacity: 0.82; }
 
 .world__badge {
   display: flex;
@@ -566,14 +565,11 @@ button {
   transition: transform 0.12s ease;
 }
 
-.level:active:not(:disabled) { transform: translateY(4px) scale(0.96); }
+.level:active { transform: translateY(4px) scale(0.96); }
 .level--done { background: linear-gradient(180deg, #fff6c8, #ffdd7a); }
-.level--locked { opacity: 0.45; cursor: default; }
 
 .level__star { position: absolute; top: -6px; right: -4px; font-size: 0.5em; }
-.level__lock { position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.62em; background: rgba(255,255,255,0.55); border-radius: 50%; }
 .level__num { position: relative; }
-.level--locked .level__num { opacity: 0.35; }
 
 /* ------------------------------------------------------------ reward track */
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { sfx } from '../audio/sfx'
 import { useGame } from '../game/store'
-import { LEVELS_PER_WORLD, WORLDS, isLevelOpen, isWorldOpen } from '../game/worlds'
+import { LEVELS_PER_WORLD, WORLDS } from '../game/worlds'
 import type { World } from '../game/types'
 import { RewardTrack } from './RewardTrack'
 import { Robot } from './Robot'
@@ -36,15 +36,8 @@ export function MapScreen({ onPlay, onHome, onWardrobe, onGrownUps }: MapScreenP
       <RewardTrack />
 
       <div className="map__worlds">
-        {WORLDS.map((world, wi) => (
-          <WorldRow
-            key={world.id}
-            world={world}
-            open={isWorldOpen(wi, save.progress)}
-            done={save.progress[world.id] ?? 0}
-            progress={save.progress}
-            onPlay={onPlay}
-          />
+        {WORLDS.map((world) => (
+          <WorldRow key={world.id} world={world} done={save.progress[world.id] ?? 0} onPlay={onPlay} />
         ))}
       </div>
     </div>
@@ -53,42 +46,39 @@ export function MapScreen({ onPlay, onHome, onWardrobe, onGrownUps }: MapScreenP
 
 interface WorldRowProps {
   world: World
-  open: boolean
+  /** Highest level finished in this world; drives the stars, not access. */
   done: number
-  progress: Record<string, number>
   onPlay: (worldId: string, level: number) => void
 }
 
-function WorldRow({ world, open, done, progress, onPlay }: WorldRowProps) {
+function WorldRow({ world, done, onPlay }: WorldRowProps) {
   const { say } = useGame()
   const complete = done >= LEVELS_PER_WORLD
 
   return (
     <section
-      className={`world ${open ? '' : 'world--locked'}`}
+      className="world"
       style={{ ['--world' as string]: world.color, ['--world-dark' as string]: world.accent }}
     >
       <button
         className="world__badge"
         onClick={() => {
           sfx.tap()
-          say(open ? `${world.name}. ${world.blurb}` : `${world.name} is still asleep. Finish a level before it to wake it up!`)
+          say(`${world.name}. ${world.blurb}`)
         }}
       >
-        <span className="world__emoji" aria-hidden="true">{open ? world.emoji : '🔒'}</span>
+        <span className="world__emoji" aria-hidden="true">{world.emoji}</span>
         <span className="world__name">{world.name}</span>
         {complete && <span className="world__done" aria-label="finished">🏅</span>}
       </button>
 
       <div className="world__levels">
         {world.levels.map((level) => {
-          const unlocked = open && isLevelOpen(world, level.index, progress)
           const cleared = level.index <= done
           return (
             <button
               key={level.index}
-              className={`level ${cleared ? 'level--done' : ''} ${unlocked ? '' : 'level--locked'}`}
-              disabled={!unlocked}
+              className={`level ${cleared ? 'level--done' : ''}`}
               onClick={() => {
                 sfx.whoosh()
                 onPlay(world.id, level.index)
@@ -97,7 +87,6 @@ function WorldRow({ world, open, done, progress, onPlay }: WorldRowProps) {
             >
               <span className="level__num">{level.index}</span>
               {cleared && <span className="level__star" aria-hidden="true">⭐</span>}
-              {!unlocked && <span className="level__lock" aria-hidden="true">🔒</span>}
             </button>
           )
         })}

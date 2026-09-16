@@ -38,11 +38,14 @@ rebuild needed if the site ever moves or gets a custom domain.
 
 ## What's in it
 
-**Six worlds, five levels each.** Counting Cove → Adding Meadow → Taking Away
-Woods → Number Dunes → Frosty Peak → Star Station. Counting up to six, then
-addition and subtraction within ten, then sums up to fourteen. A world opens as
-soon as you finish the *first* level of the one before it, so a younger player
-is never fully walled in by a world that's too hard.
+**Six worlds, five levels each, none of them locked.** Counting Cove → Adding
+Meadow → Taking Away Woods → Number Dunes → Frosty Peak → Star Station.
+Counting up to six, then addition and subtraction within ten, then sums up to
+fourteen. They're listed easiest-first as guidance, but every one is playable
+from the very first launch — a child who wants to poke at the rocket world is
+never told no, and nobody gets stuck behind a level that's too hard. Finished
+levels earn a star on the map and finished worlds a medal; stars gate the
+wardrobe, never the maths.
 
 **Everything is read aloud.** Questions, praise, prize names, world names,
 menu labels. Tapping any speech bubble repeats it. Uses the browser's built-in

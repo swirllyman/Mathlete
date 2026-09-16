@@ -85,19 +85,14 @@ export function worldById(id: string): World {
 }
 
 /**
- * A world opens once the previous world's first level is done, so a younger
- * kid is never fully walled in by a world that is too hard for them.
+ * Nothing on the map is ever locked. Worlds are listed easiest-first as
+ * guidance, but a child can play any of them at any time: the only thing stars
+ * gate is the wardrobe. A four-year-old who wants to poke at Star Station is
+ * never told no, and nobody can get stuck behind a level that is too hard.
+ *
+ * `progress` is still tracked — it is what puts a star on a finished level and
+ * a medal on a finished world — it just doesn't gate anything.
  */
-export function isWorldOpen(worldIndex: number, progress: Record<string, number>): boolean {
-  if (worldIndex === 0) return true
-  const prev = WORLDS[worldIndex - 1]
-  return (progress[prev.id] ?? 0) >= 1
-}
-
-export function isLevelOpen(world: World, levelIndex: number, progress: Record<string, number>): boolean {
-  return levelIndex <= (progress[world.id] ?? 0) + 1
-}
-
 export function totalLevelsDone(progress: Record<string, number>): number {
   return WORLDS.reduce((sum, w) => sum + Math.min(progress[w.id] ?? 0, LEVELS_PER_WORLD), 0)
 }

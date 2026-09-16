@@ -3,11 +3,15 @@ import type { LevelSpec, ProblemKind, World } from './types'
 export const LEVELS_PER_WORLD = 5
 export const PROBLEMS_PER_LEVEL = 5
 
+/** Levels from this index up are Hard Mode, in the worlds that have any. */
+const HARD_FROM = 4
+
 /**
  * Levels inside a world ramp gently: the number range grows across the five
- * levels and the last two add a fourth answer bubble.
+ * levels and the last two add a fourth answer bubble. Worlds built with
+ * `hard` also put their last two levels into Hard Mode.
  */
-function makeLevels(kinds: ProblemKind[], minMax: number, maxMax: number): LevelSpec[] {
+function makeLevels(kinds: ProblemKind[], minMax: number, maxMax: number, hard = false): LevelSpec[] {
   const levels: LevelSpec[] = []
   for (let i = 0; i < LEVELS_PER_WORLD; i++) {
     const t = i / (LEVELS_PER_WORLD - 1)
@@ -16,6 +20,7 @@ function makeLevels(kinds: ProblemKind[], minMax: number, maxMax: number): Level
       kinds,
       max: Math.round(minMax + (maxMax - minMax) * t),
       choiceCount: i < 2 ? 3 : 4,
+      hard: hard && i + 1 >= HARD_FROM,
     })
   }
   return levels
@@ -56,7 +61,7 @@ export const WORLDS: World[] = [
     emoji: '🐫',
     color: '#ffab73',
     accent: '#e07a3c',
-    levels: makeLevels(['add'], 7, 10),
+    levels: makeLevels(['add'], 7, 10, true),
   },
   {
     id: 'peak',
@@ -65,7 +70,7 @@ export const WORLDS: World[] = [
     emoji: '⛄',
     color: '#8fb8ff',
     accent: '#4f7ddb',
-    levels: makeLevels(['sub'], 7, 10),
+    levels: makeLevels(['sub'], 7, 10, true),
   },
   {
     id: 'station',
@@ -74,7 +79,7 @@ export const WORLDS: World[] = [
     emoji: '🚀',
     color: '#c3a6ff',
     accent: '#8c66e0',
-    levels: makeLevels(['add', 'sub'], 10, 14),
+    levels: makeLevels(['add', 'sub'], 10, 14, true),
   },
 ]
 

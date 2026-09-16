@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { sfx } from '../audio/sfx'
 import { useGame } from '../game/store'
 import { LEVELS_PER_WORLD, WORLDS } from '../game/worlds'
@@ -8,7 +8,7 @@ import { Robot } from './Robot'
 import { TopBar } from './TopBar'
 
 interface MapScreenProps {
-  onPlay: (worldId: string, level: number) => void
+  onPlay: (worldId: string, level: number, endless: boolean) => void
   onHome: () => void
   onWardrobe: () => void
   onGrownUps: () => void
@@ -16,6 +16,9 @@ interface MapScreenProps {
 
 export function MapScreen({ onPlay, onHome, onWardrobe, onGrownUps }: MapScreenProps) {
   const { save, say } = useGame()
+  // One switch rather than a second button on all thirty levels: it decides
+  // what tapping any level does, and every level has a forever version.
+  const [endless, setEndless] = useState(false)
 
   useEffect(() => {
     say('Pick a place to play!')
@@ -33,11 +36,40 @@ export function MapScreen({ onPlay, onHome, onWardrobe, onGrownUps }: MapScreenP
         </button>
       </div>
 
+      <div className="mode" role="group" aria-label="How long to play">
+        <button
+          className={`mode__pick ${endless ? '' : 'mode__pick--on'}`}
+          onClick={() => {
+            sfx.tap()
+            setEndless(false)
+            say('Five questions.')
+          }}
+        >
+          <span aria-hidden="true">5️⃣</span> Five Questions
+        </button>
+        <button
+          className={`mode__pick ${endless ? 'mode__pick--on' : ''}`}
+          onClick={() => {
+            sfx.tap()
+            setEndless(true)
+            say('Play forever! Keep going as long as you like.')
+          }}
+        >
+          <span aria-hidden="true">♾️</span> Forever
+        </button>
+      </div>
+
       <RewardTrack />
 
       <div className="map__worlds">
         {WORLDS.map((world) => (
-          <WorldRow key={world.id} world={world} done={save.progress[world.id] ?? 0} onPlay={onPlay} />
+          <WorldRow
+            key={world.id}
+            world={world}
+            done={save.progress[world.id] ?? 0}
+            endless={endless}
+            onPlay={onPlay}
+          />
         ))}
       </div>
     </div>
@@ -48,10 +80,11 @@ interface WorldRowProps {
   world: World
   /** Highest level finished in this world; drives the stars, not access. */
   done: number
-  onPlay: (worldId: string, level: number) => void
+  endless: boolean
+  onPlay: (worldId: string, level: number, endless: boolean) => void
 }
 
-function WorldRow({ world, done, onPlay }: WorldRowProps) {
+function WorldRow({ world, done, endless, onPlay }: WorldRowProps) {
   const { say } = useGame()
   const complete = done >= LEVELS_PER_WORLD
 
@@ -78,15 +111,18 @@ function WorldRow({ world, done, onPlay }: WorldRowProps) {
           return (
             <button
               key={level.index}
-              className={`level ${cleared ? 'level--done' : ''}`}
+              className={`level ${cleared ? 'level--done' : ''} ${level.hard ? 'level--hard' : ''}`}
               onClick={() => {
                 sfx.whoosh()
-                onPlay(world.id, level.index)
+                onPlay(world.id, level.index, endless)
               }}
-              aria-label={`${world.name}, level ${level.index}${cleared ? ', finished' : ''}`}
+              aria-label={`${world.name}, level ${level.index}${level.hard ? ', hard mode' : ''}${
+                cleared ? ', finished' : ''
+              }`}
             >
               <span className="level__num">{level.index}</span>
               {cleared && <span className="level__star" aria-hidden="true">⭐</span>}
+              {level.hard && <span className="level__hard" aria-hidden="true">🔥</span>}
             </button>
           )
         })}

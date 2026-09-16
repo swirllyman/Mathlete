@@ -1255,3 +1255,168 @@ button {
 /* Buttons inside a settings panel should hug their label, not span the card. */
 .panel > .big-btn,
 .panel > .title__row { align-self: flex-start; }
+
+/* ==========================================================================
+   Hard Mode, the covered pile, and endless play
+   ========================================================================== */
+
+/* ---- Hard Mode badge ---- */
+
+.badge-hard {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px clamp(9px, 1.8vw, 15px);
+  border-radius: var(--r-pill);
+  background: linear-gradient(180deg, #ff9d5c, #f46f3c);
+  color: #fff;
+  font-size: clamp(11px, 1.8vh, 16px);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  box-shadow: var(--pop-sm);
+  white-space: nowrap;
+}
+
+.badge-hard--banner { animation: breathe 2.4s ease-in-out infinite; }
+
+/* ---- play HUD ---- */
+
+.play__hud {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.6vw, 14px);
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.play__streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px clamp(12px, 2.4vw, 20px);
+  border-radius: var(--r-pill);
+  background: var(--card);
+  box-shadow: var(--pop-sm);
+  font-size: clamp(13px, 2.1vh, 19px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the covered pile ---- */
+
+.tray--covered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: clamp(74px, 15vw, 150px);
+  min-height: clamp(74px, 15vh, 150px);
+  /* A lid, not a tray: stripes read as a cover laid over something. */
+  background: repeating-linear-gradient(
+    -45deg,
+    #cbbdf0 0 14px,
+    #bcaae9 14px 28px
+  );
+  border-color: #8f79cf;
+  box-shadow: 0 5px 0 #8f79cf, 0 10px 18px rgba(60, 40, 90, 0.22);
+  transform: rotate(2.5deg);
+  transition: transform 0.12s ease;
+}
+
+.tray--covered:active { transform: rotate(2.5deg) translateY(4px) scale(0.98); }
+
+.tray__count {
+  font-size: clamp(30px, 7vh, 62px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 3px 0 rgba(90, 70, 140, 0.55), 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tray__peek {
+  font-size: clamp(8px, 1.3vh, 12px);
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ---- hint row ---- */
+
+.play__tools {
+  display: flex;
+  gap: clamp(6px, 1.6vw, 14px);
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.play__hint--peek {
+  background: linear-gradient(180deg, #ffd8a8, #ffbf7a);
+  color: #6b3d13;
+}
+
+/* ---- Hard Mode levels on the map ---- */
+
+.level--hard {
+  background: linear-gradient(180deg, #ffd9bd, #ffb684);
+  color: #8a3f13;
+}
+
+.level--hard.level--done { background: linear-gradient(180deg, #ffe7a8, #ffc36b); }
+
+.level__hard {
+  position: absolute;
+  bottom: -6px;
+  right: -5px;
+  font-size: 0.66em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* ---- five-questions / forever switch ---- */
+
+.mode {
+  display: flex;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 5px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: var(--pop-sm);
+}
+
+.mode__pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px clamp(10px, 2.4vw, 22px);
+  border-radius: var(--r-pill);
+  font-size: clamp(12px, 1.9vh, 17px);
+  font-weight: 600;
+  color: var(--ink-soft);
+  transition: background 0.18s ease, transform 0.12s ease, color 0.18s ease;
+}
+
+.mode__pick--on {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--pop-sm);
+  transform: translateY(-2px);
+}
+
+/* ---- cleared card ---- */
+
+.cleared__brag {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(13px, 2.1vh, 19px);
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(50, 40, 80, 0.55);
+}
+
+/* Numeral-only answers (Hard Mode) get the full bubble to themselves. */
+.bubble--bare .bubble__num { font-size: clamp(34px, min(9vh, 15vw), 76px); }

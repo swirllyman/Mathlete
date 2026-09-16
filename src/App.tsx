@@ -14,7 +14,7 @@ import { WardrobeScreen } from './components/WardrobeScreen'
 type Screen =
   | { name: 'title' }
   | { name: 'map' }
-  | { name: 'play'; worldId: string; level: number }
+  | { name: 'play'; worldId: string; level: number; endless: boolean }
   | { name: 'wardrobe' }
   | { name: 'grownups' }
 
@@ -58,12 +58,13 @@ function Game() {
 
   /** After a level, roll straight into the next one so play keeps flowing. */
   const advance = (worldId: string, level: number) => {
+    const endless = screen.name === 'play' ? screen.endless : false
     if (level < LEVELS_PER_WORLD) {
-      leaveLevel({ name: 'play', worldId, level: level + 1 })
+      leaveLevel({ name: 'play', worldId, level: level + 1, endless })
       return
     }
     const next = WORLDS[WORLDS.findIndex((w) => w.id === worldId) + 1]
-    leaveLevel(next ? { name: 'play', worldId: next.id, level: 1 } : { name: 'map' })
+    leaveLevel(next ? { name: 'play', worldId: next.id, level: 1, endless } : { name: 'map' })
   }
 
   const closeGift = () => {
@@ -93,7 +94,7 @@ function Game() {
 
       {screen.name === 'map' && (
         <MapScreen
-          onPlay={(worldId, level) => setScreen({ name: 'play', worldId, level })}
+          onPlay={(worldId, level, endless) => setScreen({ name: 'play', worldId, level, endless })}
           onHome={() => setScreen({ name: 'title' })}
           onWardrobe={() => setScreen({ name: 'wardrobe' })}
           onGrownUps={() => setScreen({ name: 'grownups' })}
@@ -102,9 +103,10 @@ function Game() {
 
       {screen.name === 'play' && (
         <PlayScreen
-          key={`${screen.worldId}-${screen.level}`}
+          key={`${screen.worldId}-${screen.level}-${screen.endless}`}
           worldId={screen.worldId}
           level={screen.level}
+          endless={screen.endless}
           onExit={() => leaveLevel({ name: 'map' })}
           onFinished={advance}
         />

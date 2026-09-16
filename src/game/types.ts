@@ -43,6 +43,12 @@ export interface LevelSpec {
   max: number
   /** How many answer bubbles to show. */
   choiceCount: number
+  /**
+   * Hard Mode. The pile a child would otherwise just count sits under a lid,
+   * so the sum has to be reasoned about rather than tallied. Reserved for the
+   * tail end of the last worlds.
+   */
+  hard: boolean
 }
 
 export interface World {

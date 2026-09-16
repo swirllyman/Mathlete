@@ -60,6 +60,21 @@ blob.
 the second miss, Bloop counts the objects out loud one at a time, lighting each
 one up as it's named. There's also a "Help me count" button any time.
 
+**Play forever, at any level.** A switch on the map decides what tapping a
+level does: five questions and a finish line, or endless play at that level's
+difficulty with fresh random numbers each time. Endless pays out on the same
+rhythm — a milestone every five right — so it's a real way to earn wardrobe
+pieces, not a side mode.
+
+**Hard Mode** on the last two levels of the last three worlds. The pile a child
+would otherwise just tally is hidden under a lid showing only its numeral, so
+addition becomes *counting on* from the visible pile and subtraction becomes
+*counting back* from a hidden total. Answer bubbles drop their picture-counts
+too, or counting the answers would be an easy way around the whole thing. It's
+announced up front, badged on the map and on screen, and framed as brave rather
+than scary — clearing one says "So brave!", missing one says Bloop is proud you
+tried, and a **Peek** button lifts the lid any time, no penalty.
+
 **Stars and a reward track.** One star per correct answer plus a bonus for
 finishing a level. Every four stars pops a wrapped present. There are 43 prizes
 across five slots — body colors, faces, hats, held items and backdrop scenes —

@@ -205,7 +205,10 @@ button {
   flex-direction: column;
   align-items: center;
   gap: clamp(6px, 1.4vh, 16px);
-  padding: max(10px, env(safe-area-inset-top)) clamp(10px, 3vw, 28px) max(12px, env(safe-area-inset-bottom));
+  /* The trailing strip is reserved for the fixed build stamp, so no screen's
+     bottom row ever sits underneath it. */
+  padding: max(10px, env(safe-area-inset-top)) clamp(10px, 3vw, 28px)
+    calc(max(12px, env(safe-area-inset-bottom, 0px)) + 15px);
   min-height: 0;
   animation: screen-in 0.38s cubic-bezier(0.22, 1.4, 0.4, 1);
 }
@@ -1420,3 +1423,43 @@ button {
 
 /* Numeral-only answers (Hard Mode) get the full bubble to themselves. */
 .bubble--bare .bubble__num { font-size: clamp(34px, min(9vh, 15vw), 76px); }
+
+/* ---- build stamp ---- */
+
+.build-stamp {
+  position: fixed;
+  right: max(6px, env(safe-area-inset-right, 0px));
+  bottom: max(4px, env(safe-area-inset-bottom, 0px));
+  z-index: 70;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: rgba(40, 30, 65, 0.3);
+  color: #fff;
+  font-size: clamp(8px, 1.15vh, 11px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  opacity: 0.62;
+  /* Never steal a tap: this corner is exactly where small hands land. */
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Hard Mode legend on the map ---- */
+
+.legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  max-width: 100%;
+  padding: 4px clamp(10px, 2vw, 16px);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--pop-sm);
+  font-size: clamp(10px, 1.6vh, 14px);
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-align: center;
+}

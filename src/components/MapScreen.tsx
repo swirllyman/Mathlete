@@ -59,6 +59,16 @@ export function MapScreen({ onPlay, onHome, onWardrobe, onGrownUps }: MapScreenP
         </button>
       </div>
 
+      <button
+        className="legend"
+        onClick={() => {
+          sfx.tap()
+          say('The levels with a flame are Hard Mode. They are extra tricky, and it is brave to try them!')
+        }}
+      >
+        <span aria-hidden="true">🔥</span> Flame levels are Hard Mode — extra tricky!
+      </button>
+
       <RewardTrack />
 
       <div className="map__worlds">

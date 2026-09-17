@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { sfx } from '../audio/sfx'
 import { speech } from '../audio/speech'
+import { BUILD } from './BuildStamp'
 import { REWARD_ORDER } from '../game/catalog'
 import { useGame } from '../game/store'
 import { LEVELS_PER_WORLD, WORLDS, totalLevelsDone } from '../game/worlds'
@@ -87,6 +88,9 @@ export function GrownUps({ onHome }: { onHome: () => void }) {
           <Stat label="Levels finished" value={`${levelsDone} / ${totalLevels}`} />
           <Stat label="Items unlocked" value={`${unlockedCount} / ${totalItems}`} />
         </div>
+        <p className="hint">
+          Build v{BUILD.version} · commit {BUILD.sha} · built {BUILD.date}
+        </p>
       </section>
 
       <section className="panel">

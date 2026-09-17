@@ -3,6 +3,7 @@ import { speech } from './audio/speech'
 import { GameProvider, useGame } from './game/store'
 import type { WardrobeItem } from './game/types'
 import { LEVELS_PER_WORLD, WORLDS } from './game/worlds'
+import { BuildStamp } from './components/BuildStamp'
 import { GiftOverlay } from './components/GiftOverlay'
 import { GrownUps } from './components/GrownUps'
 import { MapScreen } from './components/MapScreen'
@@ -119,6 +120,8 @@ function Game() {
       {/* Keyed by prize: two can come due at once, and the second must get a
           freshly wrapped box of its own rather than reusing the opened one. */}
       {activeGift && <GiftOverlay key={activeGift.id} item={activeGift} onDone={closeGift} />}
+
+      <BuildStamp />
     </div>
   )
 }

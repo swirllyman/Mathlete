@@ -83,6 +83,14 @@ and each one goes straight onto Bloop when it's opened.
 **A grown-ups menu** behind a multiplication gate: sound and voice toggles, a
 voice picker with speed and pitch sliders, progress stats, and a reset.
 
+## Which build am I looking at?
+
+Every screen carries the build in the bottom-right corner — `v1.0.0 · 0ad53bb`
+— version and short commit. The grown-ups menu spells it out in full, with the
+build date. Both come from `package.json` and the commit at build time, wired
+up in `vite.config.ts`; in CI the commit comes from `GITHUB_SHA`, and locally
+from `git`. Bump the `version` in `package.json` when it should change.
+
 ## Built with
 
 TypeScript, React and Vite — a single page, no router, no backend, no asset

@@ -708,7 +708,6 @@ button {
      margins below centre the question and its objects as one block. */
   flex: 0 1 auto;
   min-height: 0;
-  margin-bottom: auto;
   padding: clamp(10px, 2.2vh, 22px) clamp(8px, 2vw, 24px);
   max-width: 100%;
   border-radius: var(--r-lg);
@@ -1462,4 +1461,97 @@ button {
   font-weight: 600;
   color: var(--ink-soft);
   text-align: center;
+}
+
+/* ==========================================================================
+   Number line
+   ========================================================================== */
+
+.numline {
+  flex: 0 0 auto;
+  width: 100%;
+  /* Carries the auto margin for the whole question block, so the objects and
+     their number line stay together instead of drifting apart. */
+  margin-top: clamp(4px, 1vh, 12px);
+  margin-bottom: auto;
+  padding: clamp(5px, 1vh, 10px) clamp(8px, 1.6vw, 14px);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--pop-sm);
+}
+
+.numline__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.numline__axis {
+  stroke: #9a8fc0;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.numline__arrow { fill: #9a8fc0; }
+
+.numline__tick {
+  stroke: #b3a9d4;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.numline__label {
+  fill: var(--ink-soft);
+  font-size: 6px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the number landed on gets picked out */
+.numline__stop--land .numline__tick { stroke: var(--world-dark, #8c66e0); stroke-width: 2.2; }
+.numline__stop--land .numline__label {
+  fill: var(--ink);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.numline__arc {
+  fill: none;
+  stroke: #ff9d5c;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  /* Each hop draws itself, so the jump reads as a movement not a diagram. */
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: draw-hop 0.42s ease-out forwards;
+}
+
+@keyframes draw-hop {
+  to { stroke-dashoffset: 0; }
+}
+
+.numline__origin {
+  fill: none;
+  stroke: #b3a9d4;
+  stroke-width: 1.4;
+  stroke-dasharray: 2 2;
+}
+
+.numline__marker {
+  /* Slides between numbers; the hop arc above sells the arc, this sells the
+     landing. */
+  transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+.numline__dot {
+  fill: var(--world-dark, #8c66e0);
+  stroke: #fff;
+  stroke-width: 1.6;
+}
+
+.numline__pupil { fill: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .numline__arc { animation: none; stroke-dashoffset: 0; }
 }

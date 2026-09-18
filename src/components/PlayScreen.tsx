@@ -6,6 +6,7 @@ import { useGame } from '../game/store'
 import type { Problem } from '../game/types'
 import { LEVELS_PER_WORLD, PROBLEMS_PER_LEVEL, worldById } from '../game/worlds'
 import { Confetti } from './Confetti'
+import { NumberLine, lineMaxFor } from './NumberLine'
 import { Robot, type RobotMood } from './Robot'
 import { TopBar } from './TopBar'
 
@@ -58,6 +59,10 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
     makeLevelProblems(spec, endless ? ENDLESS_BATCH : PROBLEMS_PER_LEVEL),
   )
   const [rightCount, setRightCount] = useState(0)
+  // How many single hops along the number line have been travelled, and
+  // whether the marker has settled on the answer.
+  const [hops, setHops] = useState(0)
+  const [landed, setLanded] = useState(false)
   // Hard Mode only: the lid is lifted for this question after a peek or a hint.
   const [peeking, setPeeking] = useState(false)
   const [index, setIndex] = useState(0)
@@ -75,6 +80,12 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
   const timers = useRef<number[]>([])
 
   const problem = problems[index]
+
+  // Where the journey along the line starts. Addition sets off from the first
+  // addend, subtraction from the total it is counting back down from, and a
+  // counting question makes no journey at all.
+  const lineFrom = problem ? (problem.kind === 'add' ? problem.a : problem.kind === 'sub' ? problem.a : 0) : 0
+  const lineMax = lineMaxFor(Math.max(spec.max, problem?.answer ?? 0))
 
   const peek = useCallback(() => {
     setPeeking((was) => {
@@ -128,6 +139,36 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
   }, [hard, say])
 
   /**
+   * Walks the marker one number at a time from the start to the answer,
+   * drawing each hop as it goes. Same fixed cadence as the object count, and
+   * for the same reason: speech callbacks resolve instantly where no voice is
+   * installed, which would flash the whole journey past in a frame.
+   */
+  const hopAlong = useCallback(
+    (speakSteps: boolean): number => {
+      if (!problem || problem.kind === 'count') {
+        setLanded(true)
+        return 0
+      }
+      const total = Math.abs(problem.answer - problem.a)
+      const back = problem.kind === 'sub'
+      // Long journeys hop quicker, or thirteen jumps would outstay their
+      // welcome between two questions.
+      const STEP_MS = total > 6 ? 300 : 460
+      for (let i = 1; i <= total; i++) {
+        later(() => {
+          setHops(i)
+          sfx.star()
+          if (speakSteps) speech.speak(numberWord(back ? problem.a - i : problem.a + i), { interrupt: false })
+        }, i * STEP_MS)
+      }
+      later(() => setLanded(true), (total + 1) * STEP_MS)
+      return (total + 1) * STEP_MS
+    },
+    [problem, later],
+  )
+
+  /**
    * Walks the objects one at a time, saying "one… two… three".
    *
    * The pace is a fixed cadence rather than a chain of speech callbacks: on a
@@ -138,6 +179,8 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
     if (!problem) return
     // Nothing to count while a pile is still hidden, so a hint always reveals.
     setPeeking(true)
+    // Show the same sum as a journey along the line, not just as a tally.
+    hopAlong(true)
     const total = problem.kind === 'sub' ? problem.answer : problem.kind === 'add' ? problem.a + problem.b : problem.a
     const STEP_MS = 700
     speech.stop()
@@ -152,7 +195,7 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
       setCountingAt(null)
       say(`${numberWord(total)} ${problem.noun}!`)
     }, (total + 1) * STEP_MS)
-  }, [problem, say, later])
+  }, [problem, say, later, hopAlong])
 
   const goNext = useCallback(() => {
     setWrongChoices([])
@@ -161,6 +204,8 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
     setMood('idle')
     setLocked(false)
     setPeeking(false)
+    setHops(0)
+    setLanded(false)
 
     if (endless) {
       // Top the queue up before it runs dry, so questions never stall.
@@ -203,6 +248,7 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
       setBurst((b) => b + 1)
       sfx.correct()
       awardStars(1)
+      const journeyMs = hopAlong(false)
 
       const streak = rightCount + 1
       setRightCount(streak)
@@ -217,7 +263,9 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
       } else {
         say(`${pick(PRAISE)} ${numberWord(problem.answer)}!`)
       }
-      later(goNext, 1800)
+      // Wait out the hop along the number line: cutting the journey off
+      // halfway would throw away the part that actually explains the answer.
+      later(goNext, Math.max(1800, journeyMs + 500))
       return
     }
 
@@ -300,6 +348,15 @@ export function PlayScreen({ worldId, level, endless, onExit, onFinished }: Play
         hard={hard}
         peeking={peeking}
         onPeek={peek}
+      />
+
+      <NumberLine
+        max={lineMax}
+        kind={problem.kind}
+        from={lineFrom}
+        to={problem.answer}
+        hops={hops}
+        landed={landed}
       />
 
       <div className={`play__answers play__answers--${problem.choices.length}`}>

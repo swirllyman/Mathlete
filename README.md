@@ -75,6 +75,15 @@ announced up front, badged on the map and on screen, and framed as brave rather
 than scary — clearing one says "So brave!", missing one says Bloop is proud you
 tried, and a **Peek** button lifts the lid any time, no penalty.
 
+**A number line under every question.** Counting objects teaches *how many*; a
+line teaches *where* — that numbers sit in an order, that seven is further
+along than three, and that adding is a hop forward while taking away is a hop
+back. On a correct answer the marker hops one number at a time from the first
+addend to the answer, drawing each jump, so the sum is watched happening rather
+than just tallied. The same two spans always (0–10, and 0–20 for the biggest
+world), never a range that shifts under them question to question. "Help me
+count" walks the line out loud too.
+
 **Stars and a reward track.** One star per correct answer plus a bonus for
 finishing a level. Every four stars pops a wrapped present. There are 43 prizes
 across five slots — body colors, faces, hats, held items and backdrop scenes —

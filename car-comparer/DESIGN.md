@@ -4,6 +4,11 @@
 > the `Car Compare` repo is reachable. Nothing here touches Mathlete's code;
 > moving it is a straight copy of `car-comparer/` into the new repo's root.
 
+> **Status:** Phase 1 is built, along with the parametric 3D view from Phase 2
+> (see [README.md](README.md)). Decisions so far: web app, free (parametric
+> models + hand-entered data), current car is a 2019 RAV4 Hybrid XLE, and
+> mirrors are **not** folded, so fit checks use the mirrors-out width.
+
 ## 1. The one job
 
 **Answer "will this car fit in my garage, and by how much?" at a glance.**
